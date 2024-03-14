@@ -2,8 +2,8 @@
 import { GetFormStats, GetForms } from "@/actions/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ReactNode, Suspense } from "react";
-
+import { Suspense } from "react";
+import { StatsCard } from "./StatsCard";
 import { FaWpforms } from "react-icons/fa";
 
 import { Separator } from "@/components/ui/separator";
@@ -26,9 +26,9 @@ interface Submission {
 
 interface PastSubmission {
   name: string;
-  school: string;
-  date: string;
-  index: string;
+  school:string;
+  date:string;
+  index:string;
 
 }
 
@@ -82,46 +82,12 @@ function StatsCards(props: StatsCardProps) {
       />
 
 
-
+    
     </div>
   );
 }
 
-export function StatsCard({
-  title,
-  value,
-  icon,
-  helperText,
-  loading,
-  className,
-}: {
-  title: string;
-  value: string;
-  helperText: string;
-  className: string;
-  loading: boolean;
-  icon: ReactNode;
-}) {
-  return (
-    <Card className={className}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">
-          {loading && (
-            <Skeleton>
-              <span className="opacity-0">0</span>
-            </Skeleton>
-          )}
-          {!loading && value}
-        </div>
-        <p className="text-xs text-muted-foreground pt-1">{helperText}</p>
-      </CardContent>
-    </Card>
-  );
-}
+
 
 function FormCardSkeleton() {
   return <Skeleton className="border-2 border-primary-/20 h-[190px] w-full" />;
@@ -129,17 +95,17 @@ function FormCardSkeleton() {
 
 async function FormCards() {
 
-  const user = await currentUser();
+  const user= await currentUser();
   const firstname = user?.firstName?.toString()
-
-  console.log(firstname + 'sdfsdf')
-  const abhijeetData: PastSubmission[] = [];
+  
+console.log(firstname+'sdfsdf')
+  const abhijeetData:PastSubmission []= [];
   try {
     const submissionsRef = database.ref('submissions');
     const snapshot = await submissionsRef.once('value');
     const schools: Record<string, Record<string, Record<string, Submission>>> = snapshot.val(); // Retrieve schools and submissions
 
-
+    
 
     // Iterate over each school
     Object.keys(schools).forEach(schoolKey => {
@@ -154,17 +120,17 @@ async function FormCards() {
             abhijeetData.push({
               school: schoolKey,
               date: dateKey,
-              name: firstname,
-              index: submissionKey
+              name:firstname,
+              index:submissionKey
             });
-
+           
           }
         });
       });
     });
 
     console.log("Data with name Abhijeet:");
-
+    
   } catch (error) {
     console.error("Error retrieving data:", error);
 
@@ -186,24 +152,24 @@ function FormCard({ form }: { form: PastSubmission }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <span className="truncate font-bold">{form.name}</span>
-          <Badge>{form.date}</Badge>
-
+           <Badge>{form.date}</Badge>
+        
         </CardTitle>
         <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
-
+         
         </CardDescription>
       </CardHeader>
       <CardContent className="h-[20px] truncate text-sm text-muted-foreground">
         {form.school}
       </CardContent>
       <CardFooter>
-
-        <Button asChild className="w-full mt-2 text-md gap-4">
-          <Link href={`/forms/${form.school}/${form.date}/${form.index}/${form.name}`}>
-            View submissions <BiRightArrowAlt />
-          </Link>
-        </Button>
-
+        
+          <Button asChild className="w-full mt-2 text-md gap-4">
+            <Link href={`/forms/${form.school}/${form.date}/${form.index}/${form.name}`}>
+              View submissions <BiRightArrowAlt />
+            </Link>
+          </Button>
+        
       </CardFooter>
     </Card>
   );

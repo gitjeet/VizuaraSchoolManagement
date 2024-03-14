@@ -1,8 +1,8 @@
 "use server";
 import { formSchema, formSchemaType } from "@/schemas/form";
 import { currentUser } from "@clerk/nextjs";
-import { useUser } from "@clerk/nextjs";
-import { database, storage } from '../components/firebase/firebaseConfig'
+
+import { database} from '../components/firebase/firebaseConfig'
 class UserNotFoundErr extends Error {}
 
 export async function GetFormStats() {
