@@ -1,3 +1,4 @@
+
 import { GetFormStats, GetForms } from "@/actions/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +16,22 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
+import { currentUser } from "@clerk/nextjs";
+import { database, storage } from '../../components/firebase/firebaseConfig'
+
+interface Submission {
+  name: string;
+  otherData: string;
+  // Add other properties as needed
+}
+
+interface PastSubmission {
+  name: string;
+  school:string;
+  date:string;
+  index:string;
+
+}
 
 export default function Home() {
   return (
@@ -112,55 +129,82 @@ function FormCardSkeleton() {
 }
 
 async function FormCards() {
+
+  const user= await currentUser();
+  const firstname = user?.firstName?.toString()
+  
+console.log(firstname+'sdfsdf')
+  const abhijeetData:PastSubmission []= [];
+  try {
+    const submissionsRef = database.ref('submissions');
+    const snapshot = await submissionsRef.once('value');
+    const schools: Record<string, Record<string, Record<string, Submission>>> = snapshot.val(); // Retrieve schools and submissions
+
+    
+
+    // Iterate over each school
+    Object.keys(schools).forEach(schoolKey => {
+      const school = schools[schoolKey];
+      // Iterate over submissions under each school
+      Object.keys(school).forEach(dateKey => {
+        const submissions = school[dateKey];
+        Object.keys(submissions).forEach(submissionKey => {
+          const submission = submissions[submissionKey];
+          // Check if submission has a 'name' property and if it's 'Abhijeet'
+          if (submission && submission.name == firstname) {
+            abhijeetData.push({
+              school: schoolKey,
+              date: dateKey,
+              name:firstname,
+              index:submissionKey
+            });
+           
+          }
+        });
+      });
+    });
+
+    console.log("Data with name Abhijeet:");
+    
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+
+  }
+
   const forms = await GetForms();
   return (
     <>
-     
+      {abhijeetData!!.map((form) => (
+        <FormCard key={form.date} form={form} />
+      ))}
     </>
   );
 }
 
-function FormCard({ form }: { form: Form }) {
+function FormCard({ form }: { form: PastSubmission }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <span className="truncate font-bold">{form.name}</span>
-          {form.published && <Badge>Published</Badge>}
-          {!form.published && <Badge variant={"destructive"}>Draft</Badge>}
+           <Badge>{form.date}</Badge>
+        
         </CardTitle>
         <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
-          {formatDistance(form.createdAt, new Date(), {
-            addSuffix: true,
-          })}
-          {form.published && (
-            <span className="flex items-center gap-2">
-              <LuView className="text-muted-foreground" />
-              <span>{form.visits.toLocaleString()}</span>
-              <FaWpforms className="text-muted-foreground" />
-              <span>{form.submissions.toLocaleString()}</span>
-            </span>
-          )}
+         
         </CardDescription>
       </CardHeader>
       <CardContent className="h-[20px] truncate text-sm text-muted-foreground">
-        {form.description || "No description"}
+        {form.school}
       </CardContent>
       <CardFooter>
-        {form.published && (
+        
           <Button asChild className="w-full mt-2 text-md gap-4">
-            <Link href={`/forms/${form.id}`}>
+            <Link href={`/forms/${form.school}/${form.date}/${form.index}/${form.name}`}>
               View submissions <BiRightArrowAlt />
             </Link>
           </Button>
-        )}
-        {!form.published && (
-          <Button asChild variant={"secondary"} className="w-full mt-2 text-md gap-4">
-            <Link href={`/builder/${form.id}`}>
-              Edit form <FaEdit />
-            </Link>
-          </Button>
-        )}
+        
       </CardFooter>
     </Card>
   );

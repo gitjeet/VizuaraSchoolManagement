@@ -1,39 +1,45 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ImShare } from "react-icons/im";
 import { toast } from "./ui/use-toast";
 
-function FormLinkShare({ shareUrl }: { shareUrl: string }) {
+function FormLinkShare({ shareUrl, pronoun, onInputChange }: { shareUrl: string, pronoun: string, onInputChange: (value: string) => void }) {
   const [mounted, setMounted] = useState(false);
+  const [internalShareUrl, setInternalShareUrl] = useState(shareUrl);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    setInternalShareUrl(shareUrl);
+  }, [shareUrl]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setInternalShareUrl(newValue);
+    onInputChange(newValue); // Notify parent component of input change
+  };
+
   if (!mounted) {
     return null; // avoiding window not defined error
   }
 
-  const shareLink = `${window.location.origin}/submit/${shareUrl}`;
+  const handleButtonClick = () => {
+    // Logic to handle button click
+    console.log("Button clicked");
+  };
+
   return (
     <div className="flex flex-grow gap-4 items-center">
-      <Input value={shareLink} readOnly />
       <Button
         className="w-[250px]"
-        onClick={() => {
-          navigator.clipboard.writeText(shareLink);
-          toast({
-            title: "Copied!",
-            description: "Link copied to clipboard",
-          });
-        }}
+        onClick={handleButtonClick}
       >
-        <ImShare className="mr-2 h-4 w-4" />
-        Share link
+        {pronoun}
       </Button>
+      <Input value={internalShareUrl} onChange={handleInputChange} />
     </div>
   );
 }

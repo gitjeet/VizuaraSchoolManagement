@@ -7,14 +7,24 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAC-x4zVFuvTTFESMrajoBH6d8t-_pKksI",
-  authDomain: "vizuaraschoolmanagement.firebaseapp.com",
-  projectId: "vizuaraschoolmanagement",
-  storageBucket: "vizuaraschoolmanagement.appspot.com",
-  messagingSenderId: "805912428641",
-  appId: "1:805912428641:web:ef313e9240b99fd157ea20",
-  measurementId: "G-PFCVJ6GRMG"
+
+  apiKey: "AIzaSyCG-l7w3p6TQVkGaZycDLTI4-ph5STmW8E",
+
+  authDomain: "vizuaradelta.firebaseapp.com",
+
+  projectId: "vizuaradelta",
+
+  storageBucket: "vizuaradelta.appspot.com",
+
+  messagingSenderId: "1010171251555",
+
+  appId: "1:1010171251555:web:25bd9cde3c2a99e3682156",
+
+  measurementId: "G-12DXPJRTRV"
+
 };
+
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
