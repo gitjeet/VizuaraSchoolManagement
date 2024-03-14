@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { ImShare } from "react-icons/im";
-import { toast } from "./ui/use-toast";
 
 function FormLinkShare({ shareUrl, pronoun, onInputChange }: { shareUrl: string, pronoun: string, onInputChange: (value: string) => void }) {
   const [mounted, setMounted] = useState(false);

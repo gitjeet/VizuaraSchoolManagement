@@ -18,14 +18,12 @@ import {
 } from "./ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
 
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { FileUpload } from "./ui/fileupload";
-import { DateInput } from "./ui/dateinput";
-import { currentUser } from "@clerk/nextjs";
+import { DateInput } from "./ui/dateinput";;
 import { useUser } from "@clerk/nextjs";
 import { database, storage } from '../components/firebase/firebaseConfig'
 function CreateFormBtn() {

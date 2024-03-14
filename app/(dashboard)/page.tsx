@@ -3,21 +3,20 @@ import { GetFormStats, GetForms } from "@/actions/form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ReactNode, Suspense } from "react";
-import { LuView } from "react-icons/lu";
+
 import { FaWpforms } from "react-icons/fa";
-import { HiCursorClick } from "react-icons/hi";
-import { TbArrowBounce } from "react-icons/tb";
+
 import { Separator } from "@/components/ui/separator";
 import CreateFormBtn from "@/components/CreateFormBtn";
-import { Form } from "@prisma/client";
+
 import { Badge } from "@/components/ui/badge";
-import { formatDistance } from "date-fns";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BiRightArrowAlt } from "react-icons/bi";
-import { FaEdit } from "react-icons/fa";
+
 import { currentUser } from "@clerk/nextjs";
-import { database, storage } from '../../components/firebase/firebaseConfig'
+import { database } from '../../components/firebase/firebaseConfig'
 
 interface Submission {
   name: string;
@@ -27,9 +26,9 @@ interface Submission {
 
 interface PastSubmission {
   name: string;
-  school:string;
-  date:string;
-  index:string;
+  school: string;
+  date: string;
+  index: string;
 
 }
 
@@ -83,7 +82,7 @@ function StatsCards(props: StatsCardProps) {
       />
 
 
-    
+
     </div>
   );
 }
@@ -130,17 +129,17 @@ function FormCardSkeleton() {
 
 async function FormCards() {
 
-  const user= await currentUser();
+  const user = await currentUser();
   const firstname = user?.firstName?.toString()
-  
-console.log(firstname+'sdfsdf')
-  const abhijeetData:PastSubmission []= [];
+
+  console.log(firstname + 'sdfsdf')
+  const abhijeetData: PastSubmission[] = [];
   try {
     const submissionsRef = database.ref('submissions');
     const snapshot = await submissionsRef.once('value');
     const schools: Record<string, Record<string, Record<string, Submission>>> = snapshot.val(); // Retrieve schools and submissions
 
-    
+
 
     // Iterate over each school
     Object.keys(schools).forEach(schoolKey => {
@@ -155,17 +154,17 @@ console.log(firstname+'sdfsdf')
             abhijeetData.push({
               school: schoolKey,
               date: dateKey,
-              name:firstname,
-              index:submissionKey
+              name: firstname,
+              index: submissionKey
             });
-           
+
           }
         });
       });
     });
 
     console.log("Data with name Abhijeet:");
-    
+
   } catch (error) {
     console.error("Error retrieving data:", error);
 
@@ -187,24 +186,24 @@ function FormCard({ form }: { form: PastSubmission }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <span className="truncate font-bold">{form.name}</span>
-           <Badge>{form.date}</Badge>
-        
+          <Badge>{form.date}</Badge>
+
         </CardTitle>
         <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
-         
+
         </CardDescription>
       </CardHeader>
       <CardContent className="h-[20px] truncate text-sm text-muted-foreground">
         {form.school}
       </CardContent>
       <CardFooter>
-        
-          <Button asChild className="w-full mt-2 text-md gap-4">
-            <Link href={`/forms/${form.school}/${form.date}/${form.index}/${form.name}`}>
-              View submissions <BiRightArrowAlt />
-            </Link>
-          </Button>
-        
+
+        <Button asChild className="w-full mt-2 text-md gap-4">
+          <Link href={`/forms/${form.school}/${form.date}/${form.index}/${form.name}`}>
+            View submissions <BiRightArrowAlt />
+          </Link>
+        </Button>
+
       </CardFooter>
     </Card>
   );
